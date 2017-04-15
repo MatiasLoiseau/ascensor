@@ -1,0 +1,295 @@
+/*============================================================================
+ * Autor: Grupo 4
+ * Fecha: 2017-14-04
+ 
+Entregable 10: Ascensor
+   Estados:
+      - 1-EN_ESPERA
+      - 2-SUBIENDO
+      - 3-BAJANDO
+      - 4-ABRIENDO_PUERTA
+	  - 5-PUERTA_ABIERTA
+	  - 6-CERRANDO_PUERTA
+	  - 7-PUERTA_CERRADA
+	  - 8-MODO_CONFIGURACION
+	  - 9-LEER_PISO
+	  - 10-ALARMA_PUERTA_ABIERTA
+	  
+   Cambio de estados por tiempo:
+      
+	  -SUBIENDO: 1seg  //tiempo que tarda en subir un piso
+	  -BAJANDO: 1seg   //tiempo que tarda en bajar un piso
+	  -ABRIENDO_PUERTA: 1seg
+	  -CERRANDO_PUERTA: 1seg
+	  -PUERTA_ABIERTA: 2 seg
+	  -ALARMA_PUERTA_ABIERTA: 3seg // si pasan 3 seg con puerta abierta activa la alarma
+      
+ 
+ *===========================================================================*/
+
+/*==================[inlcusiones]============================================*/
+
+#include "programa.h"   // <= su propio archivo de cabecera
+#include "sapi.h"       // <= Biblioteca sAPI
+
+/*==================[definiciones y macros]==================================*/
+
+// Nuevo tipo de datos enumerado llamado estadoMEF
+typedef enum{
+   EN_ESPERA,          		// 0
+   SUBIENDO,           		// 1
+   BAJANDO,            		// 2
+   ABRIENDO_PUERTA,    		// 3
+   PUERTA_ABIERTA,     		// 4
+   CERRANDO_PUERTA,    		// 5
+   PUERTA_CERRADA,     		// 6
+   MODO_CONFIGURACION,  	// 7
+   LEER_PISO,           	// 8
+   ALARMA_PUERTA_ABIERTA,   //10
+    
+} estadoMEF_t;
+      
+#define SEG_TO_MS(val) ((val)*1000)
+
+/*==================[definiciones de datos internos]=========================*/
+
+/*==================[definiciones de datos externos]=========================*/
+
+/*==================[definiciones de datos globales]=========================*/
+
+// Variable de estado (global)
+estadoMEF_t estadoActual;
+int8 pisoDeseado = 0; //guardo el piso deseado
+int8 pisoActual = 0;  //guarso el piso actual
+int8 diferenciaPiso = 0;  // diferenciaPiso = pisoDeseado - pisoActual
+int8 recorrerPisos [10];  // vector que guarda 10 pisos (no se si es igual a 10 datos)
+/*==================[declaraciones de funciones internas]====================*/
+
+/*==================[declaraciones de funciones externas]====================*/
+
+// Prototipos de funciones
+void InicializarMEF( void );
+void ActualizarMEF( void );
+void romperMEF( void );
+void leerPiso ( void ); // tenemos que generar la funcion que le el piso actual del ascensor 
+/*==================[funcion principal]======================================*/
+
+// FUNCION PRINCIPAL, PUNTO DE ENTRADA AL PROGRAMA LUEGO DE ENCENDIDO O RESET.
+int main( void ){
+
+   // ---------- CONFIGURACIONES ------------------------------
+   // Inicializar y configurar la plataforma
+   boardConfig();
+  
+   InicializarMEF();
+   
+   // ---------- REPETIR POR SIEMPRE --------------------------
+   while( TRUE )
+   {      
+      ActualizarMEF();
+      
+      romperMEF();
+   } 
+
+   // NO DEBE LLEGAR NUNCA AQUI, debido a que a este programa se ejecuta 
+   // directamenteno sobre un microcontroladore y no es llamado/ por ningun
+   // Sistema Operativo, como en el caso de un programa para PC.
+   return 0;
+}
+
+/*==================[definiciones de funciones internas]=====================*/
+
+/*==================[definiciones de funciones externas]=====================*/
+
+void romperMEF( void ){
+   if( !gpioRead(TEC4) ){
+      estadoActual = 58;      
+   }
+}
+
+      
+
+delay_t tiempoSubiendo;
+delay_t tiempoBajando;
+delay_t tiempoAbriendoPuerta;
+delay_t tiempoCerrandoPuerta;
+delay_t tiempoPuertaAbierta;
+delay_t tiempoAlarmaPuertaAbierta;
+
+
+// Función Inicializar MEF
+void InicializarMEF( void ){
+   estadoActual = EN_ESPERA;
+   
+   delayConfig( &tiempoSubiendo, SEG_TO_MS(1) );
+   delayConfig( &tiempoBajando, SEG_TO_MS(1) );
+   delayConfig( &tiempoAbriendoPuerta, SEG_TO_MS(1) );
+   delayConfig( &tiempoCerrandoPuerta, SEG_TO_MS(1) );  
+   delayConfig( &tiempoPuertaAbierta, SEG_TO_MS(2) );
+   delayConfig( &tiempoAlarmaPuertaAbierta, SEG_TO_MS(3) );   
+}
+
+// Función Actualizar MEF
+void ActualizarMEF(void){
+   
+   switch(estadoActual) {
+      
+      case EN_ESPERA:
+	  prenderEnEspera();
+	  if(numeroTeclado==99)
+	  estadoActual = MODO_CONFIGURACION;
+	  if(nuevoPiso==true){
+	  estadoActual = LEER_PISO;
+	  else
+	  estadoActual = EN_ESPERA;
+	  }
+      break;
+      
+	  
+      case LEER_PISO:
+	  apagarLeds();
+	  leerPiso(); //generar funcion leerPiso para saber en que piso estoy
+      diferenciaPiso = pisoDeseado - pisoActual;
+	  if(diferenciaPiso >> 0)
+	  estadoActual = SUBIENDO;
+	  else
+	  estadoActual = BAJANDO;
+      break;
+      
+	  
+      case SUBIENDO:
+	  prenderEnMovimiento();
+      if(pisoActual = pisoDeseado) 
+	  estadoActual = ABRIENDO_PUERTA;
+	  else
+	  estadoActual = EN_ESPERA;
+      break;
+      
+	  
+      case BAJANDO:
+	  prenderEnMovimiento();
+      if(pisoActual = pisoDeseado)
+	  estadoActual = ABRIENDO_PUERTA;
+	  else
+	  estadoActual = EN_ESPERA;
+      break;
+	  
+	  
+	  case ABRIENDO_PUERTA:
+	  prenderAbriendoPuerta();
+      if (delayRead(&tiempoAbriendoPuerta))
+	  estadoActual = PUERTA_ABIERTA;
+	  else
+	  estadoActual = ABRIENDO_PUERTA;
+	  break;
+		
+		
+	  case PUERTA_ABIERTA:
+	  prenderPuertaAbierta();
+	  if(delayRead(&tiempoAbriendoPuerta))
+	  estadoActual = ALARMA_PUERTA_ABIERTA;
+	  if(delay(&tiempoPuertaAbierta) && TEC1 == true)
+	  estadoActual = CERRANDO_PUERTA;
+	  break; 
+	  
+
+	  case ALARMA_PUERTA_ABIERTA:
+	  prenderAlarmaPuertaAbierta();
+	  if (TEC1 == true)
+	  estadoActual = ALARMA_PUERTA_ABIERTA;
+	  else
+	  estadoActual = CERRANDO_PUERTA;
+	  break;
+		 
+		 
+	  case CERRANDO_PUERTA:
+	  prenderCerrandoPuerta();
+	  if (delayRead(&tiempoCerradoPuerta) && TEC1 == true)
+	  estadoActual = PUERTA_CERRADA;
+	  else
+	  estadoActual = CERRANDO_PUERTA;
+	  if(TEC1 == false)
+	  estadoActual = ABRIENDO_PUERTA;
+	  break;
+	  
+	  		 
+	  case PUERTA_CERRADA:
+	  apagarLeds();
+	  if (diferenciaPiso >> 0)
+	  estadoActual = SUBIENDO;
+	  if (diferenciaPiso << 0)
+	  estadoActual = BAJANDO;
+	  if(diferenciaPiso == 0)
+	  estadoActual == EN_ESPERA;
+      break;
+      
+      default:
+         //Si algo modificó la variable estadoActual
+         // a un estado no válido llevo la MEF a un
+         // lugar seguro, por ejemplo, la reinicio:
+         InicializarMEF();
+      break;
+         
+   }
+
+void prenderAbriendoPuerta(void){
+gpioWrite(LED1, OFF);
+gpioWrite(LED2, OFF);
+gpioWrite(LED3, OFF);
+gpioWrite(LEDR, OFF);
+gpioWrite(LEDG, OFF);
+gpioWrite(LEDB, OFF);
+
+void prenderAlarmaPuertaAbierta(void){
+gpioWrite(LED1, OFF);
+gpioWrite(LED2, OFF);
+gpioWrite(LED3, OFF);
+toggle(LEDR, 0.5);
+gpioWrite(LEDG, OFF);
+gpioWrite(LEDB, OFF);
+
+void prenderCerrandoPuerta(void){
+gpioWrite(LED1, OFF);
+gpioWrite(LED2, ON);
+gpioWrite(LED3, OFF);
+gpioWrite(LEDR, OFF);
+gpioWrite(LEDG, OFF);
+gpioWrite(LEDB, OFF);
+
+void prenderEnEspera(void){
+gpioWrite(LED1, OFF);
+gpioWrite(LED2, OFF);
+gpioWrite(LED3, ON);
+gpioWrite(LEDR, OFF);
+gpioWrite(LEDG, OFF);
+gpioWrite(LEDB, OFF);
+
+void prenderEnMovimiento(void){
+gpioWrite(LED1, OFF);
+gpioWrite(LED2, OFF);
+gpioWrite(LED3, OFF);
+gpioWrite(LEDR, OFF);
+gpioWrite(LEDG, OFF);
+gpioWrite(LEDB, ON);
+
+void prenderPuertaAbierta(void){
+gpioWrite(LED1, OFF);
+gpioWrite(LED2, OFF);
+gpioWrite(LED3, OFF);
+gpioWrite(LEDR, OFF);
+gpioWrite(LEDG, ON);
+gpioWrite(LEDB, OFF);
+
+void apagarLeds(void){
+gpioWrite(LED1, OFF);
+gpioWrite(LED2, OFF);
+gpioWrite(LED3, OFF);
+gpioWrite(LEDR, OFF);
+gpioWrite(LEDG, OFF);
+gpioWrite(LEDB, OFF);
+
+
+}   
+}
+
+/*==================[fin del archivo]========================================*/
