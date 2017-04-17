@@ -28,5 +28,8 @@
 /*==================[definiciones de funciones internas]=====================*/
 
 /*==================[definiciones de funciones externas]=====================*/
-
+void ingresarPiso(){
+    //Leer datos del teclado --> driverDisplays7Segmentos.h
+    
+    }
 /*==================[fin del archivo]========================================*/

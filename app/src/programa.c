@@ -31,7 +31,12 @@ Entregable 10: Ascensor
 
 #include "programa.h"   // <= su propio archivo de cabecera
 #include "sapi.h"       // <= Biblioteca sAPI
-
+#include "driverDisplays7Segmentos.h"
+#include "driverTecladoMatricial.h"
+#include "mefAscensor.h"
+#include "mefIngresoPiso.h"
+#include "mefModoConfiguracion.h"
+#include "mefPuertas.h"
 /*==================[definiciones y macros]==================================*/
 
 // Nuevo tipo de datos enumerado llamado estadoMEF
@@ -48,7 +53,7 @@ typedef enum{
    ALARMA_PUERTA_ABIERTA,   //10
     
 } estadoMEF_t;
-      
+
 #define SEG_TO_MS(val) ((val)*1000)
 
 /*==================[definiciones de datos internos]=========================*/
@@ -59,6 +64,9 @@ typedef enum{
 
 // Variable de estado (global)
 estadoMEF_t estadoActual;
+
+int cantidadPisos;      //Tienen que ser variables porque en el modo configuracion
+int cantidadSubsuelos;  //pueden cambiar la cantidad de pisos y subsuelos
 
 /*==================[declaraciones de funciones internas]====================*/
 
@@ -78,16 +86,19 @@ int main( void ){
 
    // ---------- CONFIGURACIONES ------------------------------
    // Inicializar y configurar la plataforma
-   boardConfig();
-  
-   InicializarMEF();
-   
+    boardConfig();
+    uartConfig( UART_USB, 115200 ); // Configurar UART a 115200 
+    configurarTecladoMatricial(); // Configurar teclado matricial
+    InicializarMEF();
+
+    //configuracion del driver D
    // ---------- REPETIR POR SIEMPRE --------------------------
    while( TRUE )
-   {      
-      ActualizarMEF();
+   {  
+    
+    ActualizarMEF();
       
-      romperMEF();
+    romperMEF();
    } 
 
    // NO DEBE LLEGAR NUNCA AQUI, debido a que a este programa se ejecuta 
@@ -106,7 +117,6 @@ void romperMEF( void ){
    }
 }
 
-      
 
 delay_t tiempoSubiendo;
 delay_t tiempoBajando;
@@ -116,19 +126,19 @@ delay_t tiempoPuertaAbierta;
 delay_t tiempoAlarmaPuertaAbierta;
 
 
-// FunciÃ³n Inicializar MEF
+// Función Inicializar MEF
 void InicializarMEF( void ){
-   estadoActual = EN_ESPERA;
+    estadoActual = EN_ESPERA;
    
-   delayConfig( &tiempoSubiendo, SEG_TO_MS(1) );
-   delayConfig( &tiempoBajando, SEG_TO_MS(1) );
-   delayConfig( &tiempoAbriendoPuerta, SEG_TO_MS(1) );
-   delayConfig( &tiempoCerrandoPuerta, SEG_TO_MS(1) );  
-   delayConfig( &tiempoPuertaAbierta, SEG_TO_MS(2) );
-   delayConfig( &tiempoAlarmaPuertaAbierta, SEG_TO_MS(3) );   
+    delayConfig( &tiempoSubiendo, SEG_TO_MS(1) );
+    delayConfig( &tiempoBajando, SEG_TO_MS(1) );
+    delayConfig( &tiempoAbriendoPuerta, SEG_TO_MS(1) );
+    delayConfig( &tiempoCerrandoPuerta, SEG_TO_MS(1) );  
+    delayConfig( &tiempoPuertaAbierta, SEG_TO_MS(2) );
+    delayConfig( &tiempoAlarmaPuertaAbierta, SEG_TO_MS(3) );   
 }
 
-// FunciÃ³n Actualizar MEF
+// Función Actualizar MEF
 void ActualizarMEF(void){
    
    switch(estadoActual) {
@@ -170,8 +180,8 @@ void ActualizarMEF(void){
       break;
       
       default:
-         //Si algo modificÃ³ la variable estadoActual
-         // a un estado no vÃ¡lido llevo la MEF a un
+         //Si algo modificó la variable estadoActual
+         // a un estado no válido llevo la MEF a un
          // lugar seguro, por ejemplo, la reinicio:
          InicializarMEF();
       break;
