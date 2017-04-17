@@ -16,7 +16,7 @@ extern "C" {
 /*==================[declaraciones de datos externos]========================*/
 
 /*==================[declaraciones de funciones externas]====================*/
-
+void ingresarPiso();
 /*==================[c++]====================================================*/
 #ifdef __cplusplus
 }
