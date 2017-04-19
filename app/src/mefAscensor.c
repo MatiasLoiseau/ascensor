@@ -9,7 +9,7 @@
         esta, parar, abrir las puertas y removerlo de la lista poniendole algun
         NaN o algo asi; Cuando llego al mas alto de los que habia en la cola, 
         recorrer la lista y si hay alguno no NaN bajar y hacer lo equivalente
- 
+        asd
  *===========================================================================*/
 
 /*==================[inlcusiones]============================================*/
@@ -39,7 +39,7 @@ typedef enum{
     YENDO_A_PLANTA_BAJA,
 } ascensorMEF_t;
 
-typedef struct
+
 
 /*==================[definiciones de datos internos]=========================*/
 typedef struct estadoActual {
@@ -58,15 +58,14 @@ typedef struct configuracionAscensor
     delay_t tiempoCerrandoPuerta;
     delay_t tiempoPuertaAbierta;
     delay_t tiempoAlarmaPuertaAbierta;
-    } configuracion;
+    } config;
 /*==================[definiciones de datos externos]=========================*/
 
 /*==================[definiciones de datos globales]=========================*/
 
 // Variable de estado (global)
 ascensorMEF_t ascensor_state;
-
-
+config configuracion;
 
 
 /*==================[declaraciones de funciones internas]====================*/
@@ -94,10 +93,10 @@ void InicializarMEFAscensor( void ){
     delayConfig( &configuracion.tiempoCerrandoPuerta, SEG_TO_MS(1) );  
     delayConfig( &configuracion.tiempoPuertaAbierta, SEG_TO_MS(2) );
     delayConfig( &configuracion.tiempoAlarmaPuertaAbierta, SEG_TO_MS(3) ); 
-    for (unsigned int k= 0; k<MAX_QUEUE;k++)
-        estado.nivel_deseado(k)=-MAX_S_LEVELS;
-}
-
+    //for (unsigned int k= 0; k<MAX_QUEE;k++)           //error al compilar antes: for (unsigned int k= 0; k<MAX_QUEUE;k++)
+        //estado.nivel_deseado(k)=-MAX_S_LEVELS;        //Me tira que max_queue no esta definida
+}                                                       //Aparte de eso si ponemos MAX_S_LEVELS en donde dice MAX_QUEE 
+                                                        //no va a funcionar y tira otro error que no conozco
 // Función Actualizar MEF
 void ActualizarMEFAscensor(void){
    
