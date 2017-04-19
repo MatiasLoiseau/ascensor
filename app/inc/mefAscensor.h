@@ -16,6 +16,13 @@ extern "C" {
 /*==================[declaraciones de datos externos]========================*/
 
 /*==================[declaraciones de funciones externas]====================*/
+// Prototipos de funciones
+void InicializarMEFAscensor( void );
+void ActualizarMEFAscensor( void );
+
+
+void romperMEFAscensor( void );
+
 
 /*==================[c++]====================================================*/
 #ifdef __cplusplus

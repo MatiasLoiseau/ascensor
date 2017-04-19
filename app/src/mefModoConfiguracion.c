@@ -5,15 +5,22 @@
 
 /*==================[inlcusiones]============================================*/
 
-#include "programa.h"   // <= su propio archivo de cabecera
+//#include "programa.h"   // <= su propio archivo de cabecera
 #include "sapi.h"       // <= Biblioteca sAPI
-#include "driverDisplays7Segmentos.h"
+//#include "driverDisplays7Segmentos.h"
 #include "driverTecladoMatricial.h"
-#include "mefAscensor.h"
-#include "mefIngresoPiso.h"
+//#include "mefAscensor.h"
+//#include "mefIngresoPiso.h"
 #include "mefModoConfiguracion.h"
-#include "mefPuertas.h"
+//#include "mefPuertas.h"
 /*==================[definiciones y macros]==================================*/
+
+typedef enum{
+    ESPERA_MENU, // entra a la configuracion
+    ESPERA_CONFIRMACION,
+    CONFIGURANDO,
+    GUARDANDO
+    }configuracionMEF_t;
 
 /*==================[definiciones de datos internos]=========================*/
 

@@ -15,6 +15,15 @@
 #include "mefPuertas.h"
 /*==================[definiciones y macros]==================================*/
 
+typedef enum{
+    EN_ESPERA_DE_DIGITO_1,
+    EN_ESPERA_DE_DIGITO_2_O_LETRA,
+    EN_ESPERA_DE_LETRA,
+    GUARDAR_PISO
+    }ingresoMEF_t;
+    
+ingresoMEF_t ingreso;
+
 /*==================[definiciones de datos internos]=========================*/
 
 /*==================[definiciones de datos externos]=========================*/
