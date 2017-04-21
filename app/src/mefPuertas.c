@@ -25,20 +25,37 @@
 #define LED_CERRANDOSE  LED2
 
 
-typedef enum{
-    PUERTA_CERRADA,
-    ABRIENDO_PUERTA,
-    PUERTA_ABIERTA,
-    CERRANDO_PUERTA,
-    ALARMA_PUERTA_ABIERTA
-    }puertasMEF_t;
-    
-puertasMEF_t puertas;
 /*==================[definiciones de datos globales]=========================*/
 
 /*==================[declaraciones de funciones internas]====================*/
 
 /*==================[declaraciones de funciones externas]====================*/
+void aperturaPuertas()
+{
+    /* eo: en realidad, acualiza el mef ... asi es una chanchada
+    if(puertas == PUERTA_CERRADA)
+    {
+        puertas = ABRIENDO_PUERTA;
+        delayRead(&configuracion.tiempoAbriendoPuerta); // dispara el delay de apertura de puertas
+    }
+    else if(puertas == PABRIENDO_PUERTA)
+    {
+        if(delayRead(&configuracion.tiempoAbriendoPuerta))
+        {
+            puertas =PUERTA_ABIERTA;
+            delayRead(&configuracion.tiempoPuertaAbierta); 
+        }
+    }
+    else if(puertas == PUERTA_ABIERTA)
+    {
+        if(delayRead(&configuracion.tiempoPuertaAbierta))
+        {
+            puertas = ALARMA_PUERTA_ABIERTA;
+            delayRead(&configuracion.tiempoAlarmaPuertaAbierta); 
+        }
+    }*/
+}
+
 
 /*==================[definiciones de funciones internas]=====================*/
 

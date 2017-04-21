@@ -12,6 +12,14 @@ extern "C" {
 /*==================[macros]=================================================*/
 
 /*==================[tipos de datos declarados por el usuario]===============*/
+typedef enum{
+    PUERTA_CERRADA,
+    ABRIENDO_PUERTA,
+    PUERTA_ABIERTA,
+    CERRANDO_PUERTA,
+    ALARMA_PUERTA_ABIERTA
+    }puertasMEF_t;
+puertasMEF_t puertas;
 
 /*==================[declaraciones de datos externos]========================*/
 

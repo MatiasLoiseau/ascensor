@@ -13,6 +13,7 @@ extern "C" {
 
 /*==================[tipos de datos declarados por el usuario]===============*/
 
+
 /*==================[declaraciones de datos externos]========================*/
 
 /*==================[declaraciones de funciones externas]====================*/
