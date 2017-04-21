@@ -55,12 +55,11 @@ Entregable 10: Ascensor
 /*==================[declaraciones de funciones externas]====================*/
 
 // Prototipos de funciones
-/*void InicializarMEF( void );
-void ActualizarMEF( void );
+void InicializarMEF(void);
+void ActualizarMEF(void);
 
 
-void romperMEF( void );
-*/
+void romperMEF(void);
 /*==================[funcion principal]======================================*/
 
 // FUNCION PRINCIPAL, PUNTO DE ENTRADA AL PROGRAMA LUEGO DE ENCENDIDO O RESET.
@@ -73,7 +72,6 @@ int main( void ){
     
     configurarTecladoMatricial(); // Configurar teclado matricial
     InicializarMEF();
-
     //configuracion del driver D
    // ---------- REPETIR POR SIEMPRE --------------------------
    while( TRUE )
@@ -91,6 +89,10 @@ int main( void ){
 /*==================[definiciones de funciones internas]=====================*/
 
 /*==================[definiciones de funciones externas]=====================*/
+void InicializarMEF(void){}
+void ActualizarMEF(void){}
 
+
+void romperMEF(void){}
 
 /*==================[fin del archivo]========================================*/
