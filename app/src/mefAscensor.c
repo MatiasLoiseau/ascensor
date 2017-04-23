@@ -57,7 +57,7 @@ typedef struct estadoActual {
     ascensorMEF_t prev_state;
     int8_t nivel_actual;
     int8_t nivel_deseado[MAX_QUEE];
-} estado;
+} state;
 
 typedef struct configuracionAscensor
 {
@@ -77,7 +77,7 @@ typedef struct configuracionAscensor
 // Variable de estado (global)
 ascensorMEF_t ascensor_state;
 config configuracion;
-
+state estado;   //SI NO CREAN ESTAS VARIABLES NO VA A COMPILAR ! ! ! ! !
 
 /*==================[declaraciones de funciones internas]====================*/
 
@@ -104,15 +104,15 @@ void InicializarMEFAscensor( void ){
     delayConfig( &configuracion.tiempoCerrandoPuerta, SEG_TO_MS(1) );  
     delayConfig( &configuracion.tiempoPuertaAbierta, SEG_TO_MS(2) );
     delayConfig( &configuracion.tiempoAlarmaPuertaAbierta, SEG_TO_MS(3) ); 
-    for (unsigned int k= 0; k<MAX_QUEE;k++)           //error al compilar antes: for (unsigned int k= 0; k<MAX_QUEUE;k++)
-        estado.nivel_deseado(k)=-MAX_S_LEVELS;        //Me tira que max_queue no esta definida
+    //for (unsigned int k= 0; k<MAX_QUEE;k++)           //error al compilar antes: for (unsigned int k= 0; k<MAX_QUEUE;k++)
+        //estado.nivel_deseado(k)=-MAX_S_LEVELS;        //Me tira que max_queue no esta definida
 }                                                       //Aparte de eso si ponemos MAX_S_LEVELS en donde dice MAX_QUEE 
                                                         //no va a funcionar y tira otro error que no conozco
 // Función Actualizar MEF
 void ActualizarMEFAscensor(void){
    unsigned int k = 0;
-    bool remain = false;
-   switch(ascensor_state) 
+    bool remains = false;
+    switch(ascensor_state) 
     {
        case EN_PLANTA_BAJA:
            aperturaPuertas();
@@ -124,16 +124,16 @@ void ActualizarMEFAscensor(void){
             {
                 for (k = 0;k<MAX_QUEE;k++)
                 {
-                    if (estado.nivel_actual == estado.nivel_deseado(k))
+                    if (estado.nivel_actual == estado.nivel_deseado[k])
                     {
                         estado.prev_state = BAJANDO;
                         ascensor_state = PARADO;
                         aperturaPuertas();
-                        estado.nivel_deseado(k) = -MAX_S_LEVELS;
+                        estado.nivel_deseado[k] = -MAX_S_LEVELS;
                         // --> la maquina de estados de las puertas dispara el tiempo de apertura
                         //puertas = ABRIENDO_PUERTA;
                     }
-                    if(estado.nivel_deseado(k) >= MAX_L_LEVELS)
+                    if(estado.nivel_deseado[k] >= MAX_L_LEVELS)
                         remains = true;
                 }                
                 if ( estado.nivel_actual > MAX_L_LEVELS && remains )
@@ -156,20 +156,20 @@ void ActualizarMEFAscensor(void){
             {
                 for (k = 0;k<MAX_QUEE;k++)
                 {
-                    if (estado.nivel_actual == estado.nivel_deseado(k))
+                    if (estado.nivel_actual == estado.nivel_deseado[k])
                     {
                         estado.prev_state = SUBIENDO;
                         ascensor_state = PARADO;
-                        estado.nivel_deseado(k) = -MAX_S_LEVELS;
+                        estado.nivel_deseado[k] = -MAX_S_LEVELS;
                         aperturaPuertas();
                     }
-                    if(estado.nivel_deseado(k) >= MAX_L_LEVELS)
+                    if(estado.nivel_deseado[k] >= MAX_L_LEVELS)
                         remains = true;
                 }
                 if (estado.nivel_actual < MAX_S_LEVELS && remains)
                 {
                     estado.nivel_actual ++;
-                    delayRead(&configuracion.tiempoSubiendo)
+                    delayRead(&configuracion.tiempoSubiendo);
                 }
                 else
                 {
