@@ -16,6 +16,13 @@ extern "C" {
 /*==================[declaraciones de datos externos]========================*/
 
 /*==================[declaraciones de funciones externas]====================*/
+// Prototipos de funciones
+void InicializarMEFIngresoPiso( void );
+void ActualizarMEFIngresoPiso( void );
+
+void romperMEFIngresoPiso( void );
+
+
 void ingresarPiso();
 /*==================[c++]====================================================*/
 #ifdef __cplusplus

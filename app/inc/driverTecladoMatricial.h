@@ -18,7 +18,8 @@ extern "C" {
 /*==================[declaraciones de funciones externas]====================*/
 
 void configurarTecladoMatricial( void );
-bool_t leerTecladoMatricial( void );                
+bool_t leerTecladoMatricial( void );    
+uint16_t devolverTeclaApretada();
 
 /*==================[c++]====================================================*/
 #ifdef __cplusplus
