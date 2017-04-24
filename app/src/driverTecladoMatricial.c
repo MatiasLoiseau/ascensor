@@ -20,10 +20,24 @@
 /*==================[definiciones de datos externos]=========================*/
 
 // Guarda la ultima tecla apretada
-uint16_t key = 0;
+uint16_t key = 0;                  
+// Vector para mostrar tecla presionada por UART
+uint16_t asciiKeypadKeys[16] = {
+                                '1', '2', '3', 'A',
+                                '4', '5', '6', 'B',
+                                '7', '8', '9', 'C',
+                                '*', '0', '#', 'D'
+                               };
+
+// Vector para mostrar tecla presionada en el display 7 segmentos
+uint16_t keypadKeys[16] = {
+                               1,    2,    3, 0x0a,
+                               4,    5,    6, 0x0b,
+                               7,    8,    9, 0x0c,
+                            0x0e,    0, 0x0f, 0x0d
+                          };
 
 /* Pines del teclado matricial */
-
 // Pines conectados a las Filas --> Salidas (MODO = OUTPUT)
 uint8_t keypadRowPins[4] = {
    RS232_TXD, // Row 0
@@ -41,22 +55,7 @@ uint8_t keypadColPins[4] = {
 };
 
 
-// Vector para mostrar tecla presionada por UART
-uint16_t asciiKeypadKeys[16] = {
-                                '1', '2', '3', 'A',
-                                '4', '5', '6', 'B',
-                                '7', '8', '9', 'C',
-                                '*', '0', '#', 'D'
-                               };
-
-// Vector para mostrar tecla presionada en el display 7 segmentos
-uint16_t keypadKeys[16] = {
-                               1,    2,    3, 0x0a,
-                               4,    5,    6, 0x0b,
-                               7,    8,    9, 0x0c,
-                            0x0e,    0, 0x0f, 0x0d
-                          };
-                          
+        
 /*==================[definiciones de datos globales]=========================*/
 
 /*==================[declaraciones de funciones internas]====================*/
@@ -82,7 +81,6 @@ void configurarTecladoMatricial( void ){
       gpioConfig( keypadColPins[i], GPIO_INPUT_PULLUP );
    }
 }
-
 
 /* Devuelve TRUE si hay alguna tecla presionada o FALSE (0) en caso contrario.
  * Si hay tecla presionada guarda el valor en la variable key.
@@ -145,6 +143,11 @@ bool_t leerTecladoMatricial( void ){
    }
    return retVal;
 }
+
+uint16_t devolverTeclaApretada(){
+    
+    return keypadKeys[key];
+    }
 
 
 /*==================[fin del archivo]========================================*/

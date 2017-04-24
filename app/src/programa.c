@@ -32,7 +32,7 @@ Entregable 10: Ascensor
 #include "programa.h"   // <= su propio archivo de cabecera
 #include "sapi.h"       // <= Biblioteca sAPI
 #include "driverDisplays7Segmentos.h"
-#include "driverTecladoMatricial.h"
+//#include "driverTecladoMatricial.h"
 #include "mefAscensor.h"
 #include "mefIngresoPiso.h"
 #include "mefModoConfiguracion.h"
