@@ -1,3 +1,18 @@
+/*============================================================================
+ * Autor: Grupo 4
+ * Fecha: 2017-14-04 
+ 
+ Usuarios:
+ ML: Matias Loiseau
+ EO: Esteban Osella
+ GDZ: Gastón Daniel Zapata
+ 
+ ToDo: 
+    --> 
+        
+        
+ *===========================================================================*/
+
 #ifndef _MEFMODOCONFIGURACION_H_
 #define _MEFMODOCONFIGURACION_H_
 
@@ -16,6 +31,8 @@ extern "C" {
 /*==================[declaraciones de datos externos]========================*/
 
 /*==================[declaraciones de funciones externas]====================*/
+
+void secuenciaConfiguracion();
 
 /*==================[c++]====================================================*/
 #ifdef __cplusplus
