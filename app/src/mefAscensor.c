@@ -28,49 +28,11 @@
 //#include "driverTecladoMatricial.h"
 #include "mefAscensor.h"
 #include "mefIngresoPiso.h"
-#include "mefModoConfiguracion.h"
 #include "mefPuertas.h"
 /*==================[definiciones y macros]==================================*/
 
-#define LED_MOTION  LEDB
-#define LED_STOP    LED3
-#define MAX_S_LEVELS  20
-#define MAX_L_LEVELS  5
-#define MAX_QUEE    128
 
 
-    
-typedef enum{
-    EN_PLANTA_BAJA,          // 0
-    MODO_CONFIGURACION,
-    BAJANDO,
-    SUBIENDO, 
-    PARADO,
-    YENDO_A_PLANTA_BAJA,
-} ascensorMEF_t;
-
-
-
-/*==================[definiciones de datos internos]=========================*/
-typedef struct estadoActual {
-    //ascensorMEF_t state;
-    ascensorMEF_t prev_state;
-    int8_t nivel_actual;
-    int8_t nivel_deseado[MAX_QUEE];
-} state_t;
-
-typedef struct configuracionAscensor
-{
-    configuracionMEF_t configState,
-    uint8_t cantidadPisos;      //Tienen que ser variables porque en el modo configuracion
-    uint8_t cantidadSubsuelos;  //pueden cambiar la cantidad de pisos y subsuelos
-    delay_t tiempoSubiendo;
-    delay_t tiempoBajando;
-    delay_t tiempoAbriendoPuerta;
-    delay_t tiempoCerrandoPuerta;
-    delay_t tiempoPuertaAbierta;
-    delay_t tiempoAlarmaPuertaAbierta;
-    } config_t;
 /*==================[definiciones de datos externos]=========================*/
 
 /*==================[definiciones de datos globales]=========================*/
@@ -121,20 +83,20 @@ void ActualizarMEFAscensor(void){
             aperturaPuertas();
             upcount = 0;
             downcount = 0;
-            for(k= 0;k<MAX_QUEUE;K++)
+            for(k= 0;k<MAX_QUEUE;k++)
             {
-                if(estado.nivel_deseado[k]>=configuracion.cantSubsuelos)
+                if(estado.nivel_deseado[k]>=configuracion.cantidadSubsuelos)
                 {
                     remains = true;
-                    if (estado.nivel_deseado[k]>=configuracion.cantSubsuelos>0)
+                    if (estado.nivel_deseado[k]>=configuracion.cantidadSubsuelos>0)
                         upcount++;
                     else
-                        dowcount++;
+                        downcount++;
                     }
             }
             if(remains  && (puertas == PUERTA_CERRADA))
             {
-                if(upcount >= dowcount)
+                if(upcount >= downcount)
                     ascensor_state = SUBIENDO;
                 else
                     ascensor_state = BAJANDO;
@@ -151,7 +113,7 @@ void ActualizarMEFAscensor(void){
            if(delayRead(&configuracion.tiempoBajando))
             {
                 estado.nivel_actual--;
-                for (k = 0;k<MAX_QUEE;k++)
+                for (k = 0;k<MAX_QUEUE;k++)
                 {
                     if (estado.nivel_actual == estado.nivel_deseado[k])
                     {
@@ -181,7 +143,7 @@ void ActualizarMEFAscensor(void){
            if(delayRead(&configuracion.tiempoSubiendo))
             {
                 estado.nivel_actual++;
-                for (k = 0;k<MAX_QUEE;k++)
+                for (k = 0;k<MAX_QUEUE;k++)
                 {
                     if (estado.nivel_actual == estado.nivel_deseado[k])
                     {
@@ -223,7 +185,7 @@ void ActualizarMEFAscensor(void){
            if(delayRead(&configuracion.tiempoBajando))
             {
                 estado.nivel_actual--;
-                for (k = 0;k<MAX_QUEE;k++)
+                for (k = 0;k<MAX_QUEUE;k++)
                 {
                     if (estado.nivel_actual == 0)
                     {

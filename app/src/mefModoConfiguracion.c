@@ -19,11 +19,13 @@
 #include "sapi.h"       // <= Biblioteca sAPI
 //#include "driverDisplays7Segmentos.h"
 //#include "driverTecladoMatricial.h"
-//#include "mefAscensor.h"
+#include "mefAscensor.h"
 //#include "mefIngresoPiso.h"
 #include "mefModoConfiguracion.h"
 //#include "mefPuertas.h"
 /*==================[definiciones y macros]==================================*/
+
+/* --> fue al .h
 
 typedef enum{
     ESPERA_MENU, // entra a la configuracion
@@ -33,7 +35,7 @@ typedef enum{
     SALIR,
     PENDIENTE
     }configuracionMEF_t;
-
+*/
 /*==================[definiciones de datos internos]=========================*/
 
 /*==================[definiciones de datos externos]=========================*/

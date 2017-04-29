@@ -27,6 +27,20 @@ extern "C" {
 /*==================[macros]=================================================*/
 
 /*==================[tipos de datos declarados por el usuario]===============*/
+typedef enum{
+    ESPERA_MENU, // entra a la configuracion
+    ESPERA_CONFIRMACION,
+    CONFIGURANDO,
+    GUARDANDO,
+    SALIR,
+    PENDIENTE
+    }configuracionMEF_t;
+
+/*==================[definiciones de datos internos]=========================*/
+
+/*==================[definiciones de datos externos]=========================*/
+// ver de estas cuales son las que son necesarias conservar
+configuracionMEF_t MEFconfiguracion;
 
 /*==================[declaraciones de datos externos]========================*/
 
