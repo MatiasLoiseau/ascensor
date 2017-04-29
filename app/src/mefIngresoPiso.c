@@ -60,7 +60,8 @@ void InicializarMEFIngresoPiso( void ){
     configurarTecladoMatricial();   //Inicializo el driver del teclado
     
     }
-
+delay_t delayEsperaDigito2;
+uint8_t flagDelayEsperaDigito2 =0;
 void ActualizarMEFIngresoPiso( void ){
     switch(estadoIngreso){
 
@@ -75,8 +76,21 @@ void ActualizarMEFIngresoPiso( void ){
         
         case EN_ESPERA_DE_DIGITO_2_O_LETRA:
             valorPiso[0]=devolverTeclaApretada();
-            //FALTA PONER:  Iniciar temporizador1
-            //FALTA PONER: si temporizador1=time-out --> estadoIngreso=EN_ESPERA_DE_DIGITO_1
+        //Iniciar temporizador1
+            //si temporizador1=time-out --> estadoIngreso=EN_ESPERA_DE_DIGITO_1
+            if(flagDelayEsperaDigito2 == 0)
+            {
+                delaConfig(&delayEsperaDigito2,5000);
+                flagDelayEsperaDigito2 = 1;
+            }
+            
+            if(delayRead(&delayEsperaDigito2))
+            {
+                estadoIngreso = EN_ESPERA_DE_DIGITO_1;
+                flagDelayEsperaDigito2 = 0;
+                break;
+                }
+            
             if(leerTecladoMatricial()){
                 if(devolverTeclaApretada()==(0x0b)){
                     estadoIngreso=EN_ESPERA_DE_DIGITO_1;
@@ -89,7 +103,10 @@ void ActualizarMEFIngresoPiso( void ){
                         estadoIngreso=EN_ESPERA_DE_LETRA;
                         }
                 } 
-                delay(100); //efecto anti-rebote
+                delay(100); //efecto anti-rebote  --> cambiar por no bloqueante cuando lees una tecla
+                if (estadoIngreso != EN_ESPERA_DE_DIGITO_2_O_LETRA)
+                    flagDelayEsperaDigito2 = 0;
+                    
         break;
         
         case EN_ESPERA_DE_LETRA:
@@ -105,7 +122,7 @@ void ActualizarMEFIngresoPiso( void ){
                 }
                 //FALTA PONER:  Si el temporizador2=time-out
                 //estadoIngreso=EN_ESPERA_DE_DIGITO_1;
-            delay(100); //efecto anti-rebote
+            delay(100); //efecto anti-rebote // va a quedar absorbido en el delay no bloqueante del manejo del teclado
         break;
         
         case GUARDAR_PISO:
